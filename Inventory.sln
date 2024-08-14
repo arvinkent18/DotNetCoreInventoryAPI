@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Domain", "src\Inv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Application", "src\Inventory.Application\Inventory.Application.csproj", "{FEE6BC02-455F-4683-B2CA-9C313ACA1B51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Infrastructure", "src\Inventory.Infrastructure\Inventory.Infrastructure.csproj", "{63922B33-84E9-4CD6-9642-132A9329C476}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Web", "src\Inventory.Web\Inventory.Web.csproj", "{609998E6-419B-4341-A2D3-55A930DBE057}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +30,19 @@ Global
 		{FEE6BC02-455F-4683-B2CA-9C313ACA1B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEE6BC02-455F-4683-B2CA-9C313ACA1B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEE6BC02-455F-4683-B2CA-9C313ACA1B51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63922B33-84E9-4CD6-9642-132A9329C476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63922B33-84E9-4CD6-9642-132A9329C476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63922B33-84E9-4CD6-9642-132A9329C476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63922B33-84E9-4CD6-9642-132A9329C476}.Release|Any CPU.Build.0 = Release|Any CPU
+		{609998E6-419B-4341-A2D3-55A930DBE057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{609998E6-419B-4341-A2D3-55A930DBE057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{609998E6-419B-4341-A2D3-55A930DBE057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{609998E6-419B-4341-A2D3-55A930DBE057}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{25895C8A-BC07-455F-BB6F-A51F660B8F89} = {6653448A-8415-4C7A-8D83-53EF0342697E}
 		{FEE6BC02-455F-4683-B2CA-9C313ACA1B51} = {6653448A-8415-4C7A-8D83-53EF0342697E}
+		{63922B33-84E9-4CD6-9642-132A9329C476} = {6653448A-8415-4C7A-8D83-53EF0342697E}
+		{609998E6-419B-4341-A2D3-55A930DBE057} = {6653448A-8415-4C7A-8D83-53EF0342697E}
 	EndGlobalSection
 EndGlobal
