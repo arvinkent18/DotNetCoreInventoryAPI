@@ -1,22 +1,22 @@
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Inventory.Domain.Entities
 {
     public class Product
     {
-        public Product(int id, string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Product name cannot be empty.", nameof(name));
-            }
+        public Product() { }
 
-            Id = id;
-            Name = name;
-        }
-
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
+
+         [Required]
+        public required string Name { get; set; }
+
+         [Required]
+        public required decimal Price { get; set; }
+        public required int Quantity { get; set; }
     }
 }
