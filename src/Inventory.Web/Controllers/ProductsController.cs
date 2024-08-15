@@ -1,3 +1,4 @@
+using Inventory.Application.DTO;
 using Inventory.Application.Interfaces;
 using Inventory.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -16,28 +17,28 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllProducts()
+        [ActionName("GetAll")]
+        public IEnumerable<Product> GetAllProducts()
         {
-            var products = _productService.GetAllProducts();
-            return Ok(products);
+            return _productService.GetAllProducts();
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProductById(int id)
+        public ActionResult<Product> Get(int id)
         {
             var product = _productService.GetProductById(id);
             if (product == null)
             {
                 return NotFound();
             }
-            return Ok(product);
+            return product;
         }
 
         [HttpPost]
-        public IActionResult AddProduct(Product product)
+        public IActionResult AddProduct([FromBody] CreateProductDto productDto)
         {
-            _productService.AddProduct(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+            _productService.AddProduct(productDto);
+            return CreatedAtAction(nameof(Get), new { id = productDto.Name }, productDto);
         }
 
         [HttpPut("{id}")]
