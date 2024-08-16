@@ -8,7 +8,7 @@ namespace Inventory.Application.Interfaces
         IEnumerable<Product> GetAllProducts();
         Product GetProductById(Guid id);
         void AddProduct(CreateProductDto productDto);
-        void UpdateProduct(Product product);
+        void UpdateProduct(Guid id, UpdateProductDto productDto);
         void DeleteProduct(Guid id);
     }
 }

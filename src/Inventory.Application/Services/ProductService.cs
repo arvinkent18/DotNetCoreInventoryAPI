@@ -51,22 +51,32 @@ namespace Inventory.Application.Services
             _context.SaveChanges();
         }
 
-        public void UpdateProduct(Product product)
+        public void UpdateProduct(Guid id, UpdateProductDto productDto)
         {
-            var existingProduct = _context.Products.Find(product.Id);
-            if (existingProduct != null)
-            {
-                existingProduct.Name = product.Name;
-                existingProduct.Price = product.Price;
-                existingProduct.Quantity = product.Quantity;
+            var existingProduct = _context.Products.Find(id);
 
-                _context.Products.Update(existingProduct);
-                _context.SaveChanges();
-            }
-            else
+            if (existingProduct == null)
             {
                 throw new InvalidOperationException("Product not found.");
             }
+
+            if (!string.IsNullOrEmpty(productDto.Name))
+            {
+                existingProduct.Name = productDto.Name;
+            }
+
+            if (productDto.Price.HasValue)
+            {
+                existingProduct.Price = productDto.Price.Value;
+            }
+
+            if (productDto.Quantity.HasValue)
+            {
+                existingProduct.Quantity = productDto.Quantity.Value;
+            }
+
+            _context.Products.Update(existingProduct);
+            _context.SaveChanges();
         }
 
         public void DeleteProduct(Guid id)

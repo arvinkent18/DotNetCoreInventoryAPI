@@ -42,13 +42,17 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProduct(Guid id, Product product)
+        public IActionResult UpdateProduct(Guid id, UpdateProductDto productDto)
         {
-            if (id != product.Id)
+            var product = _productService.GetProductById(id);
+
+            if (product == null)
             {
-                return BadRequest();
+                return NotFound();
             }
-            _productService.UpdateProduct(product);
+
+            _productService.UpdateProduct(id, productDto);
+
             return NoContent();
         }
 
