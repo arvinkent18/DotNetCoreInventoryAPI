@@ -16,10 +16,17 @@ namespace Inventory.Application.Services
 
         public IEnumerable<Product> GetAllProducts()
         {
-            return _context.Products.ToList();
+            try
+            {
+                return _context.Products.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred while retrieving products.", ex);
+            }
         }
 
-        public Product GetProductById(int id)
+        public Product GetProductById(Guid id)
         {
             var product = _context.Products.Find(id);
 
@@ -62,7 +69,7 @@ namespace Inventory.Application.Services
             }
         }
 
-        public void DeleteProduct(int id)
+        public void DeleteProduct(Guid id)
         {
             var product = _context.Products.Find(id);
             if (product != null)

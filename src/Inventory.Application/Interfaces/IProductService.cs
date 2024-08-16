@@ -6,9 +6,9 @@ namespace Inventory.Application.Interfaces
     public interface IProductService
     {
         IEnumerable<Product> GetAllProducts();
-        Product GetProductById(int id);
+        Product GetProductById(Guid id);
         void AddProduct(CreateProductDto productDto);
         void UpdateProduct(Product product);
-        void DeleteProduct(int id);
+        void DeleteProduct(Guid id);
     }
 }

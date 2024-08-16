@@ -24,7 +24,7 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Product> Get(int id)
+        public ActionResult<Product> Get(Guid id)
         {
             var product = _productService.GetProductById(id);
             if (product == null)
@@ -42,7 +42,7 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProduct(int id, Product product)
+        public IActionResult UpdateProduct(Guid id, Product product)
         {
             if (id != product.Id)
             {
@@ -53,7 +53,7 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        public IActionResult DeleteProduct(Guid id)
         {
             _productService.DeleteProduct(id);
             return NoContent();
