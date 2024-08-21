@@ -11,17 +11,17 @@ namespace Inventory.Infrastructure
         {
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
-            modelBuilder.Entity<Product>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            });
+
+            modelBuilder.Entity<User>()
+            .HasMany(u => u.Products)
+            .WithOne(p => p.User)
+            .HasForeignKey(p => p.UserId);
         }
     }
 }

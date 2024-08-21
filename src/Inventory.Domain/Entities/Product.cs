@@ -13,11 +13,17 @@ namespace Inventory.Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
-         [Required]
+        [Required]
         public required string Name { get; set; }
 
-         [Required]
+        [Required]
         public required decimal Price { get; set; }
+
+        [Required]
         public required int Quantity { get; set; }
+
+        public Guid UserId { get; set; }
+
+        public User User { get; set; }
     }
 }
