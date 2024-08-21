@@ -55,16 +55,22 @@ namespace Inventory.Application.Services
 
         public void UpdateUser(Guid id, UpdateUserDto userDto)
         {
-            var existingUser = _context.Users.Find(id);
+            var existingUser = _context.Users.SingleOrDefault(u => u.Id == id);
 
             if (existingUser == null)
             {
-                throw new InvalidOperationException("User not found.");
+                throw new KeyNotFoundException("User not found.");
             }
 
-            if (!string.IsNullOrEmpty(userDto.Email))
+            if (!string.IsNullOrWhiteSpace(userDto.Email))
             {
                 existingUser.Email = userDto.Email;
+            }
+
+            if (!string.IsNullOrWhiteSpace(userDto.Password))
+            {
+                var hashedPassword = _passwordHasher.HashPassword(userDto.Password);
+                existingUser.Password = hashedPassword;
             }
 
             _context.Users.Update(existingUser);
