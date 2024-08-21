@@ -7,10 +7,12 @@ namespace Inventory.Application.Services
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, IPasswordHasher passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         public IEnumerable<User> GetAllUsers()
@@ -39,10 +41,12 @@ namespace Inventory.Application.Services
 
         public void AddUser(CreateUserDto userDto)
         {
+            var hashedPassword = _passwordHasher.HashPassword(userDto.Password);
+
             var user = new User
             {
                 Email = userDto.Email,
-                Password = userDto.Password
+                Password = hashedPassword
             };
 
             _context.Users.Add(user);

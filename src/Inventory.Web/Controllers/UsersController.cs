@@ -39,8 +39,12 @@ namespace Inventory.Web.Controllers
         [HttpPost]
         public IActionResult AddUser([FromBody] CreateUserDto userDto)
         {
-            _userService.AddUser(userDto);
-            return CreatedAtAction(nameof(Get), new { id = userDto.Email }, userDto);
+            var response = new
+            {
+                Message = "User created successfully",
+            };
+
+            return CreatedAtAction(nameof(Get), new { id = userDto.Email }, response);
         }
 
         [HttpPut("{id}")]

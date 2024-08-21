@@ -1,5 +1,6 @@
 using Inventory.Application.Interfaces;
 using Inventory.Application.Services;
+using Inventory.Application.Utils;
 using Inventory.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
 
