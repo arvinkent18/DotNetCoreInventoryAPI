@@ -1,6 +1,6 @@
-namespace Inventory.Application.DTO
+﻿namespace Inventory.Application.DTO
 {
-    public class RegisterUserDto
+    public class LoginUserDto
     {
         public required string Email { get; set; }
         public required string Password { get; set; }

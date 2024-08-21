@@ -39,6 +39,8 @@ namespace Inventory.Web.Controllers
         [HttpPost]
         public IActionResult AddUser([FromBody] CreateUserDto userDto)
         {
+            _userService.AddUser(userDto);
+
             var response = new
             {
                 Message = "User created successfully",
