@@ -32,17 +32,13 @@ namespace Inventory.Application.Services
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == loginDto.Email);
 
-            if (user != null)
+            if (user == null)
             {
-                Debug.WriteLine($"User Email: {user.Email}");
-                Debug.WriteLine($"User Password: {user.Password}");
-            }
-            else
-            {
-                Debug.WriteLine("User not found.");
+                throw new UnauthorizedAccessException("Invalid credentials.");
             }
 
-            var isPasswordValid = _passwordHasher.VerifyPassword(loginDto.Password, user.Password);
+            var isPasswordValid = _passwordHasher.VerifyPassword(user.Password, loginDto.Password);
+        
             if (!isPasswordValid)
             {
                 throw new UnauthorizedAccessException("Invalid credentials.");
