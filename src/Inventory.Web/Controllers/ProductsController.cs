@@ -1,10 +1,13 @@
 using Inventory.Application.DTO;
 using Inventory.Application.Interfaces;
 using Inventory.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Inventory.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
@@ -18,15 +21,15 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [ActionName("GetAll")]
-        public IEnumerable<Product> GetAllProducts()
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return _productService.GetAllProducts();
+            return await _productService.GetAllProductsAsync();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Product> Get(Guid id)
+        public async Task<ActionResult<Product>> GetAsync(Guid id)
         {
-            var product = _productService.GetProductById(id);
+            var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -35,31 +38,33 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddProduct([FromBody] CreateProductDto productDto)
+        public async Task<IActionResult> AddProductAsync([FromBody] CreateProductDto productDto)
         {
-            _productService.AddProduct(productDto);
-            return CreatedAtAction(nameof(Get), new { id = productDto.Name }, productDto);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            await _productService.AddProductAsync(Guid.Parse(userId), productDto);
+            return CreatedAtAction(nameof(GetAsync), new { id = productDto.Name }, productDto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProduct(Guid id, UpdateProductDto productDto)
+        public async Task<IActionResult> UpdateProductAsync(Guid id, UpdateProductDto productDto)
         {
-            var product = _productService.GetProductById(id);
+            var product = await _productService.GetProductByIdAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            _productService.UpdateProduct(id, productDto);
+            await _productService.UpdateProductAsync(id, productDto);
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(Guid id)
+        public async Task<IActionResult> DeleteProductAsync(Guid id)
         {
-            _productService.DeleteProduct(id);
+            await _productService.DeleteProductAsync(id);
             return NoContent();
         }
     }

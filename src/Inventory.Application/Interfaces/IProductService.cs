@@ -5,10 +5,10 @@ namespace Inventory.Application.Interfaces
 {
     public interface IProductService
     {
-        IEnumerable<Product> GetAllProducts();
-        Product GetProductById(Guid id);
-        void AddProduct(CreateProductDto productDto);
-        void UpdateProduct(Guid id, UpdateProductDto productDto);
-        void DeleteProduct(Guid id);
+        Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<Product> GetProductByIdAsync(Guid id);
+        Task AddProductAsync(Guid userId, CreateProductDto productDto);
+        Task UpdateProductAsync(Guid id, UpdateProductDto productDto);
+        Task DeleteProductAsync(Guid id);
     }
 }

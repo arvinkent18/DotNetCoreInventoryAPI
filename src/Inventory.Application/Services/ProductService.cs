@@ -2,6 +2,7 @@ using Inventory.Application.DTO;
 using Inventory.Application.Interfaces;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Application.Services
 {
@@ -14,11 +15,11 @@ namespace Inventory.Application.Services
             _context = context;
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             try
             {
-                return _context.Products.ToList();
+                return await _context.Products.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -26,9 +27,9 @@ namespace Inventory.Application.Services
             }
         }
 
-        public Product GetProductById(Guid id)
+        public async Task<Product> GetProductByIdAsync(Guid id)
         {
-            var product = _context.Products.Find(id);
+            var product = await _context.Products.FindAsync(id);
 
             if (product == null)
             {
@@ -38,22 +39,23 @@ namespace Inventory.Application.Services
             return product;
         }
 
-        public void AddProduct(CreateProductDto productDto)
+        public async Task AddProductAsync(Guid userId, CreateProductDto productDto)
         {
             var product = new Product
             {
                 Name = productDto.Name,
                 Price = productDto.Price,
-                Quantity = productDto.Quantity
+                Quantity = productDto.Quantity,
+                UserId = userId,
             };
 
             _context.Products.Add(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateProduct(Guid id, UpdateProductDto productDto)
+        public async Task UpdateProductAsync(Guid id, UpdateProductDto productDto)
         {
-            var existingProduct = _context.Products.Find(id);
+            var existingProduct = await _context.Products.FindAsync(id);
 
             if (existingProduct == null)
             {
@@ -76,16 +78,16 @@ namespace Inventory.Application.Services
             }
 
             _context.Products.Update(existingProduct);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteProduct(Guid id)
+        public async Task DeleteProductAsync(Guid id)
         {
-            var product = _context.Products.Find(id);
+            var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
                 _context.Products.Remove(product);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             else
             {
