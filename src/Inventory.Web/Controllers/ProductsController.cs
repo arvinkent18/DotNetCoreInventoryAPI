@@ -42,8 +42,14 @@ namespace Inventory.Web.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _productService.AddProductAsync(Guid.Parse(userId), productDto);
-            return CreatedAtAction(nameof(GetAsync), new { id = productDto.Name }, productDto);
+            if (!Guid.TryParse(userId, out var parsedUserId))
+            {
+                return BadRequest("Invalid user ID.");
+            }
+
+            var createdProduct = await _productService.AddProductAsync(parsedUserId, productDto);
+
+            return CreatedAtAction(nameof(GetAsync), new { id = createdProduct.Id }, createdProduct);
         }
 
         [HttpPut("{id}")]

@@ -18,10 +18,11 @@ namespace Inventory.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-            .HasMany(u => u.Products)
-            .WithOne(p => p.User)
-            .HasForeignKey(p => p.UserId);
+            modelBuilder.Entity<Product>()
+              .HasOne<User>()
+              .WithMany(u => u.Products)
+              .HasForeignKey(p => p.UserId)
+              .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

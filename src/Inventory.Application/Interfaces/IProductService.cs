@@ -7,7 +7,7 @@ namespace Inventory.Application.Interfaces
     {
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task<Product> GetProductByIdAsync(Guid id);
-        Task AddProductAsync(Guid userId, CreateProductDto productDto);
+        Task<Product> AddProductAsync(Guid userId, CreateProductDto productDto);
         Task UpdateProductAsync(Guid id, UpdateProductDto productDto);
         Task DeleteProductAsync(Guid id);
     }

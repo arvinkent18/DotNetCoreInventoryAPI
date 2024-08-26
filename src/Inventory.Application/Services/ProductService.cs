@@ -40,8 +40,16 @@ namespace Inventory.Application.Services
             return product;
         }
 
-        public async Task AddProductAsync(Guid userId, CreateProductDto productDto)
+        public async Task<Product> AddProductAsync(Guid userId, CreateProductDto productDto)
         {
+            var existingProduct = await _context.Products
+        .FirstOrDefaultAsync(p => p.Name == productDto.Name);
+
+            if (existingProduct != null)
+            {
+                throw new ProductAlreadyExistsException();
+            }
+
             var product = new Product
             {
                 Name = productDto.Name,
@@ -52,6 +60,8 @@ namespace Inventory.Application.Services
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
+
+            return product;
         }
 
         public async Task UpdateProductAsync(Guid id, UpdateProductDto productDto)
