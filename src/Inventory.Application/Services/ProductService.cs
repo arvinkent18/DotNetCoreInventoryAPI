@@ -1,4 +1,5 @@
 using Inventory.Application.DTO;
+using Inventory.Application.Exceptions;
 using Inventory.Application.Interfaces;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure;
@@ -33,7 +34,7 @@ namespace Inventory.Application.Services
 
             if (product == null)
             {
-                throw new InvalidOperationException("Product not found.");
+                throw new ProductNotFoundException();
             }
 
             return product;
