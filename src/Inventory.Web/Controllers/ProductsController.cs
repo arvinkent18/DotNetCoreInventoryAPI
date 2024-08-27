@@ -39,7 +39,7 @@ namespace Inventory.Web.Controllers
                 throw new ProductNotFoundException();
             }
 
-            return product;
+            return Ok(product);
         }
 
         [HttpPost]

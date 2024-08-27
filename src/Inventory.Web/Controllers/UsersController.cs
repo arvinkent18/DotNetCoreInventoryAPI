@@ -35,7 +35,7 @@ namespace Inventory.Web.Controllers
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
 
@@ -68,7 +68,7 @@ namespace Inventory.Web.Controllers
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             await _userService.DeleteUserAsync(id);
-            
+
             return NoContent();
         }
     }
