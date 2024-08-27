@@ -16,6 +16,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddControllers(options =>
 {
+    options.Filters.Add<ExceptionFilter>();
     options.Filters.Add<ResponseFormatFilter>();
 });
 
