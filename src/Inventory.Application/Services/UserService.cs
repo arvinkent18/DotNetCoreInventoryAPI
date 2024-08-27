@@ -1,4 +1,5 @@
 ﻿using Inventory.Application.DTO;
+using Inventory.Application.Exceptions;
 using Inventory.Application.Interfaces;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure;
@@ -34,7 +35,7 @@ namespace Inventory.Application.Services
 
             if (user == null)
             {
-                throw new InvalidOperationException("User not found.");
+                throw new UserNotFoundException();
             }
 
             return user;
@@ -42,6 +43,14 @@ namespace Inventory.Application.Services
 
         public async Task<User> AddUserAsync(CreateUserDto userDto)
         {
+            var existingUser = await _context.Users
+       .FirstOrDefaultAsync(p => p.Email == userDto.Email);
+
+            if (existingUser != null)
+            {
+                throw new UserAlreadyExistsException();
+            }
+
             var hashedPassword = _passwordHasher.HashPassword(userDto.Password);
 
             var user = new User
@@ -62,7 +71,7 @@ namespace Inventory.Application.Services
 
             if (existingUser == null)
             {
-                throw new KeyNotFoundException("User not found.");
+                throw new UserNotFoundException();
             }
 
             if (!string.IsNullOrWhiteSpace(userDto.Email))
@@ -83,15 +92,14 @@ namespace Inventory.Application.Services
         public async Task DeleteUserAsync(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user != null)
+
+            if (user == null)
             {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
+                throw new UserNotFoundException();
             }
-            else
-            {
-                throw new InvalidOperationException("User not found.");
-            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
         }
     }
 }
