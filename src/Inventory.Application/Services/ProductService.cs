@@ -70,7 +70,7 @@ namespace Inventory.Application.Services
 
             if (existingProduct == null)
             {
-                throw new InvalidOperationException("Product not found.");
+                throw new ProductNotFoundException();
             }
 
             if (!string.IsNullOrEmpty(productDto.Name))
@@ -95,15 +95,14 @@ namespace Inventory.Application.Services
         public async Task DeleteProductAsync(Guid id)
         {
             var product = await _context.Products.FindAsync(id);
-            if (product != null)
+            
+            if (product == null)
             {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
+                throw new ProductNotFoundException();
             }
-            else
-            {
-                throw new InvalidOperationException("Product not found.");
-            }
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
         }
     }
 }
