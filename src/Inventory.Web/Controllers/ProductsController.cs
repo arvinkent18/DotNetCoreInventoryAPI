@@ -1,3 +1,4 @@
+using FluentValidation;
 using Inventory.Application.DTO;
 using Inventory.Application.Exceptions;
 using Inventory.Application.Interfaces;
@@ -33,7 +34,7 @@ namespace Inventory.Web.Controllers
         public async Task<ActionResult<Product>> GetProductByIdAsync(Guid id)
         {
             var product = await _productService.GetProductByIdAsync(id);
-            
+
             if (product == null)
             {
                 throw new ProductNotFoundException();
@@ -43,8 +44,21 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProductAsync([FromBody] CreateProductDto productDto)
+        public async Task<IActionResult> AddProductAsync([FromBody] CreateProductDto productDto, IValidator<CreateProductDto> validator)
         {
+            var validationResult = await validator.ValidateAsync(productDto);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new ValidationProblemDetails
+                {
+                    Errors = validationResult.Errors.ToDictionary(
+                        e => e.PropertyName,
+                        e => new[] { e.ErrorMessage }
+                    )
+                });
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!Guid.TryParse(userId, out var parsedUserId))

@@ -1,6 +1,9 @@
+using FluentValidation;
+using Inventory.Application.DTO;
 using Inventory.Application.Interfaces;
 using Inventory.Application.Services;
 using Inventory.Application.Utils;
+using Inventory.Application.Validators;
 using Inventory.Infrastructure;
 using Inventory.Web.Filters;
 using Inventory.Web.Middlewares;
@@ -75,6 +78,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateProductDtoValidator>();
+
 
 var app = builder.Build();
 
