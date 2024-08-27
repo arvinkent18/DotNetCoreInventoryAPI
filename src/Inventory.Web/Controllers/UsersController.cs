@@ -1,6 +1,5 @@
 ﻿using Inventory.Application.DTO;
 using Inventory.Application.Interfaces;
-using Inventory.Application.Services;
 using Inventory.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,55 +18,57 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [ActionName("GetAll")]
-        public IEnumerable<User> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
-            return _userService.GetAllUsers();
+            var users = await _userService.GetAllUsersAsync();
+
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<User> Get(Guid id)
+        public async Task<ActionResult<User>> GetUserByIdAsync(Guid id)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserByIdAsync(id);
+
             if (user == null)
             {
                 return NotFound();
             }
+
             return user;
         }
 
 
         [HttpPost]
-        public IActionResult AddUser([FromBody] CreateUserDto userDto)
+        public async Task<IActionResult> AddUserAsync([FromBody] CreateUserDto userDto)
         {
-            _userService.AddUser(userDto);
+            var createdUser = await _userService.AddUserAsync(userDto);
 
-            var response = new
-            {
-                Message = "User created successfully",
-            };
+            var uri = Url.Action("GetUserByIdAsync", new { id = createdUser.Id });
 
-            return CreatedAtAction(nameof(Get), new { id = userDto.Email }, response);
+            return Created(uri, createdUser);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(Guid id, UpdateUserDto userDto)
+        public async Task<IActionResult> UpdateUserAsync(Guid id, UpdateUserDto userDto)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserByIdAsync(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            _userService.UpdateUser(id, userDto);
+           await _userService.UpdateUserAsync(id, userDto);
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
-            _userService.DeleteUser(id);
+            await _userService.DeleteUserAsync(id);
+            
             return NoContent();
         }
     }

@@ -2,6 +2,7 @@
 using Inventory.Application.Interfaces;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 namespace Inventory.Application.Services
 {
     public class UserService : IUserService
@@ -15,11 +16,11 @@ namespace Inventory.Application.Services
             _passwordHasher = passwordHasher;
         }
 
-        public IEnumerable<User> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             try
             {
-                return _context.Users.ToList();
+                return await _context.Users.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -27,9 +28,9 @@ namespace Inventory.Application.Services
             }
         }
 
-        public User GetUserById(Guid id)
+        public async Task<User> GetUserByIdAsync(Guid id)
         {
-            var user = _context.Users.Find(id);
+            var user = await _context.Users.FindAsync(id);
 
             if (user == null)
             {
@@ -39,7 +40,7 @@ namespace Inventory.Application.Services
             return user;
         }
 
-        public void AddUser(CreateUserDto userDto)
+        public async Task<User> AddUserAsync(CreateUserDto userDto)
         {
             var hashedPassword = _passwordHasher.HashPassword(userDto.Password);
 
@@ -50,12 +51,14 @@ namespace Inventory.Application.Services
             };
 
             _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            return user;
         }
 
-        public void UpdateUser(Guid id, UpdateUserDto userDto)
+        public async Task UpdateUserAsync(Guid id, UpdateUserDto userDto)
         {
-            var existingUser = _context.Users.SingleOrDefault(u => u.Id == id);
+            var existingUser = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
 
             if (existingUser == null)
             {
@@ -74,16 +77,16 @@ namespace Inventory.Application.Services
             }
 
             _context.Users.Update(existingUser);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteUser(Guid id)
+        public async Task DeleteUserAsync(Guid id)
         {
-            var user = _context.Users.Find(id);
+            var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
                 _context.Users.Remove(user);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             else
             {

@@ -5,10 +5,10 @@ namespace Inventory.Application.Interfaces
 {
     public interface IUserService
     {
-        IEnumerable<User> GetAllUsers();
-        User GetUserById(Guid id);
-        void AddUser(CreateUserDto userDto);
-        void UpdateUser(Guid id, UpdateUserDto userDto);
-        void DeleteUser(Guid id);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User> GetUserByIdAsync(Guid id);
+        Task<User> AddUserAsync(CreateUserDto userDto);
+        Task UpdateUserAsync(Guid id, UpdateUserDto userDto);
+        Task DeleteUserAsync(Guid id);
     }
 }
