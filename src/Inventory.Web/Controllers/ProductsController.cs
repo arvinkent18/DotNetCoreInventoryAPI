@@ -1,4 +1,5 @@
 using Inventory.Application.DTO;
+using Inventory.Application.Exceptions;
 using Inventory.Application.Interfaces;
 using Inventory.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -27,12 +28,12 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetAsync(Guid id)
+        public async Task<ActionResult<Product>> GetProductByIdAsync(Guid id)
         {
             var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
             {
-                return NotFound();
+                throw new ProductNotFoundException();
             }
             return product;
         }
@@ -49,7 +50,9 @@ namespace Inventory.Web.Controllers
 
             var createdProduct = await _productService.AddProductAsync(parsedUserId, productDto);
 
-            return CreatedAtAction(nameof(GetAsync), new { id = createdProduct.Id }, createdProduct);
+            var uri = Url.Action("GetProductByIdAsync", new { id = createdProduct.Id });
+            
+            return Created(uri, createdProduct);
         }
 
         [HttpPut("{id}")]
