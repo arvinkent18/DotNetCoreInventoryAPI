@@ -33,10 +33,12 @@ namespace Inventory.Web.Controllers
         public async Task<ActionResult<Product>> GetProductByIdAsync(Guid id)
         {
             var product = await _productService.GetProductByIdAsync(id);
+            
             if (product == null)
             {
                 throw new ProductNotFoundException();
             }
+
             return product;
         }
 
@@ -64,7 +66,7 @@ namespace Inventory.Web.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                throw new ProductNotFoundException();
             }
 
             await _productService.UpdateProductAsync(id, productDto);
@@ -75,7 +77,15 @@ namespace Inventory.Web.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductAsync(Guid id)
         {
-            await _productService.DeleteProductAsync(id);
+            var product = await _productService.GetProductByIdAsync(id);
+
+            if (product == null)
+            {
+                throw new ProductNotFoundException();
+            }
+
+            await _productService.DeleteProductAsync(product.Id);
+
             return NoContent();
         }
     }
