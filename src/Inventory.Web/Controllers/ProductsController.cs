@@ -22,9 +22,11 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [ActionName("GetAll")]
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsAsync()
         {
-            return await _productService.GetAllProductsAsync();
+            var products = await _productService.GetAllProductsAsync();
+
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
@@ -51,7 +53,7 @@ namespace Inventory.Web.Controllers
             var createdProduct = await _productService.AddProductAsync(parsedUserId, productDto);
 
             var uri = Url.Action("GetProductByIdAsync", new { id = createdProduct.Id });
-            
+
             return Created(uri, createdProduct);
         }
 
