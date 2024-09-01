@@ -1,5 +1,4 @@
 using FluentValidation;
-using Inventory.Application.DTO;
 using Inventory.Application.Interfaces;
 using Inventory.Application.Services;
 using Inventory.Application.Utils;
@@ -21,6 +20,7 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ExceptionFilter>();
     options.Filters.Add<ResponseFormatFilter>();
+    options.Filters.Add<ValidateModelActionFilter>();
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -79,7 +79,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProductDtoValidator>();
-
+builder.Services.AddTransient<ValidateModelActionFilter>();
 
 var app = builder.Build();
 
