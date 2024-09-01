@@ -1,8 +1,21 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Server;
 using Server.Data;
 
+var seed = args.Contains("/seed");
+
+if (seed)
+{
+    args = args.Except(new[] { "/seed" }).ToArray();
+}
+
 var builder = WebApplication.CreateBuilder(args);
+
+if (seed)
+{
+    SeedData.EnsureSeedData(builder.Configuration.GetConnectionString("DefaultConnection"));
+}
 
 var assembly = typeof(Program).Assembly.GetName().Name;
 
