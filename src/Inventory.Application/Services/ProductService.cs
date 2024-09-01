@@ -1,6 +1,7 @@
 using Inventory.Application.DTO;
 using Inventory.Application.Exceptions;
 using Inventory.Application.Interfaces;
+using Inventory.Application.Responses;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,31 @@ namespace Inventory.Application.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        public async Task<IPagedResult<Product>> GetAllProductsAsync(Guid? userId, GetAllProductsDto getAllProductsDto)
         {
             try
             {
-                return await _context.Products.ToListAsync();
+                var query = _context.Products.AsQueryable();
+
+                if (userId.HasValue)
+                {
+                    query = query.Where(p => p.UserId == userId.Value);
+                }
+
+                var totalCount = await query.CountAsync();
+
+                var products = await query
+                    .Skip((getAllProductsDto.PageIndex - 1) * getAllProductsDto.PageSize)
+                    .Take(getAllProductsDto.PageSize)
+                    .ToListAsync();
+
+                return new PagedResult<Product>
+                {
+                    Items = products,
+                    TotalCount = totalCount,
+                    PageIndex = getAllProductsDto.PageIndex,
+                    PageSize = getAllProductsDto.PageSize
+                };
             }
             catch (Exception ex)
             {
@@ -104,5 +125,7 @@ namespace Inventory.Application.Services
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
         }
+
+
     }
 }

@@ -23,9 +23,29 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [ActionName("GetAll")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsAsync()
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsAsync([FromQuery] GetAllProductsDto getAllProductsDto, IValidator<GetAllProductsDto> validator)
         {
-            var products = await _productService.GetAllProductsAsync();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(userId, out var parsedUserId))
+            {
+                return BadRequest("Invalid user ID.");
+            }
+
+            var validationResult = await validator.ValidateAsync(getAllProductsDto);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new ValidationProblemDetails
+                {
+                    Errors = validationResult.Errors.ToDictionary(
+                        e => e.PropertyName,
+                        e => new[] { e.ErrorMessage }
+                    )
+                });
+            }
+
+            var products = await _productService.GetAllProductsAsync(parsedUserId, getAllProductsDto);
 
             return Ok(products);
         }
