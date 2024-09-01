@@ -1,4 +1,3 @@
-using FluentValidation;
 using Inventory.Application.DTO;
 using Inventory.Application.Exceptions;
 using Inventory.Application.Interfaces;
@@ -23,26 +22,13 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [ActionName("GetAll")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsAsync([FromQuery] GetAllProductsDto getAllProductsDto, IValidator<GetAllProductsDto> validator)
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsAsync([FromQuery] GetAllProductsDto getAllProductsDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!Guid.TryParse(userId, out var parsedUserId))
             {
                 return BadRequest("Invalid user ID.");
-            }
-
-            var validationResult = await validator.ValidateAsync(getAllProductsDto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(new ValidationProblemDetails
-                {
-                    Errors = validationResult.Errors.ToDictionary(
-                        e => e.PropertyName,
-                        e => new[] { e.ErrorMessage }
-                    )
-                });
             }
 
             var products = await _productService.GetAllProductsAsync(parsedUserId, getAllProductsDto);
@@ -64,21 +50,8 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProductAsync([FromBody] CreateProductDto productDto, IValidator<CreateProductDto> validator)
+        public async Task<IActionResult> AddProductAsync([FromBody] CreateProductDto productDto)
         {
-            var validationResult = await validator.ValidateAsync(productDto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(new ValidationProblemDetails
-                {
-                    Errors = validationResult.Errors.ToDictionary(
-                        e => e.PropertyName,
-                        e => new[] { e.ErrorMessage }
-                    )
-                });
-            }
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!Guid.TryParse(userId, out var parsedUserId))

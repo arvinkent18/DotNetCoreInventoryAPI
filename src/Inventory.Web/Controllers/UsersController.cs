@@ -20,21 +20,8 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [ActionName("GetAll")]
-        public async Task<ActionResult<PagedResult<User>>> GetAllUsers([FromQuery] GetAllUsersDto getAllUsersDto, IValidator<GetAllUsersDto> validator)
+        public async Task<ActionResult<PagedResult<User>>> GetAllUsers([FromQuery] GetAllUsersDto getAllUsersDto)
         {
-            var validationResult = await validator.ValidateAsync(getAllUsersDto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(new ValidationProblemDetails
-                {
-                    Errors = validationResult.Errors.ToDictionary(
-                        e => e.PropertyName,
-                        e => new[] { e.ErrorMessage }
-                    )
-                });
-            }
-
             var pagedUsers = await _userService.GetAllUsersAsync(getAllUsersDto);
 
             return Ok(pagedUsers);
