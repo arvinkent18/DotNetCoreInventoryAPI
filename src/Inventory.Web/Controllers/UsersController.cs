@@ -1,5 +1,6 @@
 ﻿using Inventory.Application.DTO;
 using Inventory.Application.Interfaces;
+using Inventory.Application.Responses;
 using Inventory.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,11 +19,11 @@ namespace Inventory.Web.Controllers
 
         [HttpGet]
         [ActionName("GetAll")]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+        public async Task<ActionResult<PagedResult<User>>> GetAllUsers([FromQuery] GetAllUsersDto getAllUsersDto)
         {
-            var users = await _userService.GetAllUsersAsync();
+            var pagedUsers = await _userService.GetAllUsersAsync(getAllUsersDto);
 
-            return Ok(users);
+            return Ok(pagedUsers);
         }
 
         [HttpGet("{id}")]

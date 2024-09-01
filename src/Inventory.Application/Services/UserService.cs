@@ -1,6 +1,7 @@
 ﻿using Inventory.Application.DTO;
 using Inventory.Application.Exceptions;
 using Inventory.Application.Interfaces;
+using Inventory.Application.Responses;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,24 @@ namespace Inventory.Application.Services
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task<IPagedResult<User>> GetAllUsersAsync(GetAllUsersDto getAllUsersDto)
         {
             try
             {
-                return await _context.Users.ToListAsync();
+                var query = _context.Users.AsQueryable();
+                var totalCount = await query.CountAsync();
+                var users = await query
+                    .Skip((getAllUsersDto.PageIndex - 1) * getAllUsersDto.PageSize)
+                    .Take(getAllUsersDto.PageSize)
+                    .ToListAsync();
+
+                return new PagedResult<User>
+                {
+                    Items = users,
+                    TotalCount = totalCount,
+                    PageIndex = getAllUsersDto.PageIndex,
+                    PageSize = getAllUsersDto.PageSize
+                };
             }
             catch (Exception ex)
             {
