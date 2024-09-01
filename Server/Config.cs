@@ -1,10 +1,12 @@
 ﻿using IdentityServer4.Models;
 
-namespace Server;
-public class Config
+namespace Server
 {
-    public static IEnumerable<IdentityResource> IdentityResources =>
-            [
+    public class Config
+    {
+        public static IEnumerable<IdentityResource> IdentityResources =>
+            new[]
+            {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                 new IdentityResource
@@ -12,24 +14,24 @@ public class Config
                     Name = "role",
                     UserClaims = new List<string> { "role" }
                 }
-            ];
+            };
 
-    public static IEnumerable<ApiScope> ApiScopes =>
-           [new ApiScope("InventoryAPI.read"), new ApiScope("InventoryAPI.write"),];
-
-    public static IEnumerable<ApiResource> ApiResources =>
-            [
+        public static IEnumerable<ApiScope> ApiScopes =>
+            new[] { new ApiScope("InventoryAPI.read"), new ApiScope("InventoryAPI.write"), };
+        public static IEnumerable<ApiResource> ApiResources =>
+            new[]
+            {
                 new ApiResource("InventoryAPI")
                 {
                     Scopes = new List<string> { "InventoryAPI.read", "InventoryAPI.write" },
                     ApiSecrets = new List<Secret> { new Secret("ScopeSecret".Sha256()) },
                     UserClaims = new List<string> { "role" }
                 }
-            ];
+            };
 
-
-    public static IEnumerable<Client> Clients =>
-        [
+        public static IEnumerable<Client> Clients =>
+            new[]
+            {
                 new Client
                 {
                     ClientId = "m2m.client",
@@ -52,6 +54,6 @@ public class Config
                     RequireConsent = true,
                     AllowPlainTextPkce = false
                 },
-        ];
+            };
+    }
 }
-
