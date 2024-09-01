@@ -16,13 +16,9 @@ namespace Inventory.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
-            modelBuilder.Entity<Product>()
-              .HasOne<User>()
-              .WithMany(u => u.Products)
-              .HasForeignKey(p => p.UserId)
-              .OnDelete(DeleteBehavior.Cascade);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

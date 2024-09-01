@@ -10,15 +10,9 @@ namespace Inventory.Domain.Entities
             Products = new List<Product>();
         }
 
-        [Key]
         public Guid Id { get; set; }
-
-        [Required]
-        public required string Email { get; set; }
-
-        [Required]
-        public required string Password { get; set; }
-
+        public string Email { get; set; }
+        public string Password { get; set; }
         public ICollection<Product> Products { get; set; }
     }
 }
